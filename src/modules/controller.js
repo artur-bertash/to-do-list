@@ -25,8 +25,10 @@ function getProjects() {
     return projects
 }
 
-function getCurentProject() {
+function getCurrentProject() {
     return currentProject
 }
-
-export { initController, addProject, addToDoToCurrent, delToDoCurrent, getProjects, getCurentProject }
+function setCurrentProject(project) {
+    currentProject = project
+}
+export { initController, addProject, addToDoToCurrent, delToDoCurrent, getProjects, getCurrentProject, setCurrentProject }

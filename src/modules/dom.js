@@ -4,17 +4,19 @@ import {
     addToDoToCurrent,
     delToDoCurrent,
     getProjects,
-    getCurentProject
+    getCurrentProject,
+    setCurrentProject
 } from './controller.js';
 
 import { createProject } from './project.js';
-
+import { createToDo } from './todo.js';
 
 function renderScreen(projects, currentProject) {
     const toDoWrapper = document.querySelector(".to-do-wrapper")
     toDoWrapper.innerHTML = ""
     renderNav(getProjects())
-
+    console.log("Current project is" + getCurrentProject().getTitle())
+    renderContent(getCurrentProject())
 
 }
 
@@ -25,6 +27,10 @@ function renderProjects(projects, wrapperProjects) {
         const projectBtn = document.createElement("button")
         projectBtn.innerText = project.getTitle()
         wrapperProjects.appendChild(projectBtn)
+        projectBtn.addEventListener("click", () => {
+            setCurrentProject(project)
+            renderContent(project)
+        })
     }
 }
 
@@ -202,7 +208,7 @@ function renderNav(projects) {
             const isImportant = inputImportance.checked
 
 
-            addToDoToCurrent(title, date, isImportant)
+            addToDoToCurrent(createToDo(title, date, isImportant))
 
             console.log("Title:", title);
             console.log("Date:", date);
@@ -212,6 +218,7 @@ function renderNav(projects) {
             dialog.close();
             dialog.remove();
 
+            renderContent(getCurrentProject())
 
         })
 
@@ -327,14 +334,92 @@ function renderNav(projects) {
 
 }
 
-function renderContent() {
-    const content = document.querySelector("div")
+function renderContent(project) {
+    const toDoWrapper = document.querySelector(".to-do-wrapper")
+    const oldContent = document.querySelector(".content")
+    if (oldContent) {
+        oldContent.remove()
+    }
+
+    const content = document.createElement("div")
+
     content.classList.add("content")
 
-    const h1 = document.querySelector("h1")
-    h1.innerText = getCurentProject()
 
+    const h1 = document.createElement("h1")
+    h1.innerText = project.getTitle()
+    h1.style.marginBottom = "8px"
+
+    const description = document.createElement("div")
+    description.innerText = project.getDescription()
+    description.style.marginBottom = "12px"
+
+    const todoContainer = document.createElement("div")
+    todoContainer.classList.add("to-do-container")
+
+    content.appendChild(h1)
+    content.appendChild(description)
+    content.appendChild(todoContainer)
+
+    renderToDos(todoContainer)
+
+    toDoWrapper.appendChild(content)
 
 }
+
+
+function renderToDos(todoContainer) {
+    const todos = getCurrentProject().getToDos();
+
+    todoContainer.innerHTML = "";
+
+    for (let todo of todos) {
+        const task = document.createElement("div");
+        task.classList.add("task");
+
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = "doneCheckbox";
+        checkbox.checked = todo.done || false;
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(todo.title));
+
+        const rightSide = document.createElement("div");
+        rightSide.classList.add("right-side");
+
+        const dateDiv = document.createElement("div");
+        dateDiv.classList.add("date");
+        dateDiv.textContent = todo.date;
+
+        const importantDiv = document.createElement("div");
+        importantDiv.textContent = todo.isImportant ? "Important!" : "";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("delete");
+
+        const trashIcon = document.createElement("i");
+        trashIcon.classList.add("fa-solid", "fa-trash");
+        deleteBtn.appendChild(trashIcon);
+
+
+        deleteBtn.addEventListener("click", () => {
+            delToDoCurrent(todo);
+            renderContent(getCurrentProject());
+        });
+
+        rightSide.appendChild(dateDiv);
+        rightSide.appendChild(importantDiv);
+        rightSide.appendChild(deleteBtn);
+
+        task.appendChild(label);
+        task.appendChild(rightSide);
+
+        todoContainer.appendChild(task);
+    }
+}
+
 
 export { renderScreen }

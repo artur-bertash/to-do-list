@@ -6,7 +6,7 @@ import {
     addToDoToCurrent,
     delToDoCurrent,
     getProjects,
-    getCurentProject
+    getCurrentProject
 } from './modules/controller.js';
 import { createProject } from "./modules/project";
 import { createToDo } from "./modules/todo";
@@ -18,22 +18,12 @@ console.log(format(now, 'yyyy-MM-dd'));
 
 
 
-const defProject = createProject("General", "Some random things");
-addProject(defProject)
-const todo_1 = createToDo("First thing", now);
-const todo_2 = createToDo("Second thing", now);
+const defProject = createProject("General", "Some random description");
+initController(defProject)
+const todo_1 = createToDo("First thing", "2025-06-05");
+const todo_2 = createToDo("Second thing", "2025-06-05");
 
 defProject.addToDo(todo_1)
 defProject.addToDo(todo_2)
 
-
-defProject.printToDos()
-console.log("--------------------")
-defProject.removeToDo(todo_1)
-defProject.printToDos()
-
-const secondProject = createProject("dsfds", "Some random things");
-addProject(secondProject)
-console.log(getProjects())
-
-renderScreen(getProjects(), getCurentProject())
+renderScreen(getProjects(), getCurrentProject())
