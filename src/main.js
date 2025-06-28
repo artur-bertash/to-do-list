@@ -5,11 +5,12 @@ import {
     addProject,
     addToDoToCurrent,
     delToDoCurrent,
-    getProjects
+    getProjects,
+    getCurentProject
 } from './modules/controller.js';
 import { createProject } from "./modules/project";
 import { createToDo } from "./modules/todo";
-import { redenderNav } from "./modules/dom.js";
+import { renderScreen } from "./modules/dom.js";
 
 const now = new Date();
 console.log(format(now, 'yyyy-MM-dd'));
@@ -35,4 +36,4 @@ const secondProject = createProject("dsfds", "Some random things");
 addProject(secondProject)
 console.log(getProjects())
 
-redenderNav(getProjects())
+renderScreen(getProjects(), getCurentProject())

@@ -7,15 +7,30 @@ import {
     getCurentProject
 } from './controller.js';
 
-function renderScreen(projects, currentProject) {
+import { createProject } from './project.js';
 
+
+function renderScreen(projects, currentProject) {
+    const toDoWrapper = document.querySelector(".to-do-wrapper")
+    toDoWrapper.innerHTML = ""
+    renderNav(getProjects())
 
 
 }
 
-function redenderNav(projects) {
+function renderProjects(projects, wrapperProjects) {
+    wrapperProjects.innerHTML = ""
+    for (let project of projects) {
+        console.log(project.getTitle())
+        const projectBtn = document.createElement("button")
+        projectBtn.innerText = project.getTitle()
+        wrapperProjects.appendChild(projectBtn)
+    }
+}
+
+function renderNav(projects) {
     const toDoWrapper = document.querySelector(".to-do-wrapper")
-    toDoWrapper.innerHTML = ""
+
     const sideBarNav = document.createElement("nav")
     sideBarNav.classList.add("side-bar")
 
@@ -36,13 +51,15 @@ function redenderNav(projects) {
     projectsDiv.appendChild(h3)
     projectsDiv.appendChild(addProjectButton)
 
+    const wrapperProjects = document.createElement("div")
+    wrapperProjects.style.display = "flex"
+    wrapperProjects.style.flexDirection = "column"
+    wrapperProjects.style.gap = "4px"
+
     sideBarNav.appendChild(projectsDiv)
-    for (let project of projects) {
-        console.log(project.getTitle())
-        const projectBtn = document.createElement("button")
-        projectBtn.innerText = project.getTitle()
-        sideBarNav.appendChild(projectBtn)
-    }
+
+    renderProjects(projects, wrapperProjects)
+    sideBarNav.appendChild(wrapperProjects)
 
     const addNewToDoBtn = document.createElement("button")
     addNewToDoBtn.innerText = "Add new ToDo!"
@@ -55,28 +72,269 @@ function redenderNav(projects) {
     addNewToDoBtn.addEventListener("click", () => {
         const dialog = document.createElement("dialog")
         dialog.id = "add-new-todo"
-        const label = document.createElement('label');
-        label.textContent = "Title:";
-        label.setAttribute('for', 'title-todo');
 
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.id = 'title-todo';
-        input.name = 'Title';
+        dialog.style.flexDirection = "column"
+        dialog.style.gap = "12px"
+        const h3 = document.createElement("h3")
+        h3.innerText = "Add new ToDo!"
+        h3.style.marginTop = "2px"
+        h3.style.marginBottom = "2px"
 
-        input.placeholder = 'Enter your task...';
-        dialog.appendChild(label);
-        dialog.appendChild(input);
+        const titleWrapper = document.createElement("div")
+        titleWrapper.style.display = "flex";
+        titleWrapper.style.flexDirection = "column";
+        titleWrapper.style.gap = "8px";
+        titleWrapper.style.marginBottom = "12px";
+
+
+        const labelTitle = document.createElement('label');
+        labelTitle.textContent = "Title:";
+        labelTitle.setAttribute('for', 'title-todo');
+        labelTitle.style.fontSize = "0.9rem";
+
+        const inputTitle = document.createElement('input');
+        inputTitle.type = 'text';
+        inputTitle.id = 'title-todo';
+        inputTitle.name = 'Title';
+        inputTitle.style.padding = "4px"
+        inputTitle.style.borderRadius = '4px'
+        inputTitle.style.border = '0.5px grey solid'
+        inputTitle.style.fontSize = "1.1rem"
+
+        inputTitle.placeholder = 'Enter your task...';
+
+
+        const datewrapper = document.createElement("div")
+        datewrapper.style.display = "flex";
+        datewrapper.style.flexDirection = "column";
+        datewrapper.style.gap = "8px";
+        datewrapper.style.marginBottom = "12px";
+
+        const inputDate = document.createElement("input")
+        inputDate.type = "date"
+        inputDate.id = "date-todo"
+        inputDate.name = "Due date"
+        inputDate.style.padding = "4px"
+        inputDate.style.borderRadius = '4px'
+        inputDate.style.border = '0.5px grey solid'
+        inputDate.style.fontSize = "1.1rem"
+        inputDate.style.fontWeight = "200"
+
+        const labelDate = document.createElement("label")
+        labelDate.textContent = "Date:";
+        labelDate.setAttribute('for', 'date-todo');
+        labelDate.style.fontSize = "0.9rem";
+
+
+        const importanceWrapper = document.createElement("div")
+        importanceWrapper.style.display = "flex"
+        importanceWrapper.style.alignItems = "center"
+        importanceWrapper.style.gap = "8px"
+        importanceWrapper.style.marginBottom = "12px";
+
+
+        const inputImportance = document.createElement("input")
+        inputImportance.type = "checkbox"
+        inputImportance.id = "importance-todo"
+        inputImportance.name = "Importance checkbox"
+        inputImportance.style.padding = "4px"
+        inputImportance.style.borderRadius = '4px'
+        inputImportance.style.border = '0.5px grey solid'
+        inputImportance.style.fontSize = "1.1rem"
+        inputImportance.style.fontWeight = "200"
+
+        const labelImportance = document.createElement("label")
+        labelImportance.textContent = "Is important:";
+        labelImportance.setAttribute('for', 'importance-todo');
+        labelImportance.style.fontSize = "0.9rem";
+
+        const buttonWrapper = document.createElement("div")
+        buttonWrapper.style.display = "grid"
+        buttonWrapper.style.width = "100%"
+        buttonWrapper.style.gridTemplateColumns = "1fr 1fr"
+        buttonWrapper.style.gap = "8px"
+
+        const AddToDoBtn = document.createElement("button")
+        AddToDoBtn.innerText = "Add ToDo"
+        AddToDoBtn.style.backgroundColor = "aliceblue"
+        AddToDoBtn.style.width = "100%";
+        AddToDoBtn.style.borderRadius = "6px";
+
+        const CancelAddToDO = document.createElement("button")
+        CancelAddToDO.innerText = "Cancel"
+        CancelAddToDO.style.backgroundColor = "aliceblue"
+        CancelAddToDO.style.width = "100%";
+        CancelAddToDO.style.borderRadius = "6px";
+
+
+        buttonWrapper.appendChild(AddToDoBtn)
+        buttonWrapper.appendChild(CancelAddToDO)
+
+        dialog.appendChild(h3)
+        titleWrapper.appendChild(labelTitle);
+        titleWrapper.appendChild(inputTitle);
+
+        datewrapper.appendChild(labelDate)
+        datewrapper.appendChild(inputDate)
+
+
+        dialog.appendChild(titleWrapper);
+        dialog.appendChild(datewrapper)
+
+        importanceWrapper.appendChild(labelImportance)
+        importanceWrapper.appendChild(inputImportance)
+        dialog.appendChild(importanceWrapper)
+
+        dialog.appendChild(buttonWrapper)
+
+
+        toDoWrapper.appendChild(dialog)
+
+        dialog.showModal();
+
+        CancelAddToDO.addEventListener("click", () => {
+            dialog.close()
+        })
+
+        AddToDoBtn.addEventListener("click", () => {
+            const title = inputTitle.value.trim()
+            const date = inputDate.value
+            const isImportant = inputImportance.checked
+
+
+            addToDoToCurrent(title, date, isImportant)
+
+            console.log("Title:", title);
+            console.log("Date:", date);
+            console.log("Important:", isImportant);
+
+
+            dialog.close();
+            dialog.remove();
+
+
+        })
+
+
+    })
+
+    addProjectButton.addEventListener("click", () => {
+        const dialogAddProject = document.createElement("dialog")
+
+
+        dialogAddProject.id = "add-new-project"
+        sideBarNav.appendChild(dialogAddProject)
+
+        const titleWrapperProject = document.createElement("div")
+        titleWrapperProject.style.display = "flex";
+        titleWrapperProject.style.flexDirection = "column";
+        titleWrapperProject.style.gap = "8px";
+        titleWrapperProject.style.marginBottom = "12px";
+
+
+        const labelTitleProject = document.createElement('label');
+        labelTitleProject.textContent = "Title:";
+        labelTitleProject.setAttribute('for', 'title-project');
+        labelTitleProject.style.fontSize = "0.9rem";
+
+        const inputTitleProject = document.createElement('input');
+        inputTitleProject.type = 'text';
+        inputTitleProject.id = 'title-project';
+        inputTitleProject.name = 'Title';
+        inputTitleProject.style.padding = "4px"
+        inputTitleProject.style.borderRadius = '4px'
+        inputTitleProject.style.border = '0.5px grey solid'
+        inputTitleProject.style.fontSize = "1.1rem"
+
+        inputTitleProject.placeholder = 'Enter your project title...';
+
+        titleWrapperProject.appendChild(labelTitleProject)
+        titleWrapperProject.appendChild(inputTitleProject)
+
+        dialogAddProject.appendChild(titleWrapperProject)
+
+        const descriptionWrapperProject = document.createElement("div")
+        descriptionWrapperProject.style.display = "flex";
+        descriptionWrapperProject.style.flexDirection = "column";
+        descriptionWrapperProject.style.gap = "8px";
+        descriptionWrapperProject.style.marginBottom = "12px";
+
+
+        const labelDescriptionProject = document.createElement('label');
+        labelDescriptionProject.textContent = "Description:";
+        labelDescriptionProject.setAttribute('for', 'description-project');
+        labelDescriptionProject.style.fontSize = "0.9rem";
+
+        const inputDescriptionProject = document.createElement('input');
+        inputDescriptionProject.type = 'text';
+        inputDescriptionProject.id = 'description-project';
+        inputDescriptionProject.name = 'Title';
+        inputDescriptionProject.style.padding = "4px"
+        inputDescriptionProject.style.borderRadius = '4px'
+        inputDescriptionProject.style.border = '0.5px grey solid'
+        inputDescriptionProject.style.fontSize = "1.1rem"
+
+        inputDescriptionProject.placeholder = 'Enter description...';
+
+        descriptionWrapperProject.appendChild(labelDescriptionProject)
+        descriptionWrapperProject.appendChild(inputDescriptionProject)
+
+        dialogAddProject.appendChild(descriptionWrapperProject)
+
+        const buttonCancelButtonsWrapper = document.createElement("div")
+        buttonCancelButtonsWrapper.style.display = "grid"
+        buttonCancelButtonsWrapper.style.width = "100%"
+        buttonCancelButtonsWrapper.style.gridTemplateColumns = "1fr 1fr"
+        buttonCancelButtonsWrapper.style.gap = "8px"
+
+        const AddProjectBtn = document.createElement("button")
+        AddProjectBtn.innerText = "Add Project"
+        AddProjectBtn.style.backgroundColor = "aliceblue"
+        AddProjectBtn.style.width = "100%";
+        AddProjectBtn.style.borderRadius = "6px";
+
+        const CancelProjectBtn = document.createElement("button")
+        CancelProjectBtn.innerText = "Cancel"
+        CancelProjectBtn.style.backgroundColor = "aliceblue"
+        CancelProjectBtn.style.width = "100%";
+        CancelProjectBtn.style.borderRadius = "6px";
+
+        buttonCancelButtonsWrapper.appendChild(AddProjectBtn)
+        buttonCancelButtonsWrapper.appendChild(CancelProjectBtn)
+        dialogAddProject.appendChild(buttonCancelButtonsWrapper)
 
 
 
+        dialogAddProject.showModal()
+
+        CancelProjectBtn.addEventListener("click", () => {
+            dialogAddProject.close()
+        })
+
+        AddProjectBtn.addEventListener("click", () => {
+            const titleProject = inputTitleProject.value.trim()
+            const descriptionProject = inputDescriptionProject.value
+
+            addProject(createProject(titleProject, descriptionProject))
+            renderProjects(getProjects(), wrapperProjects)
+
+            dialogAddProject.close();
+            dialogAddProject.remove();
+
+        })
 
     })
 
 }
 
 function renderContent() {
+    const content = document.querySelector("div")
+    content.classList.add("content")
+
+    const h1 = document.querySelector("h1")
+    h1.innerText = getCurentProject()
+
 
 }
 
-export { redenderNav }
+export { renderScreen }

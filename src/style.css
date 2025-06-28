@@ -94,3 +94,16 @@ input[type="checkbox"] {
     height: 16px;
     cursor: pointer;
 }
+
+#add-new-todo {
+    border-radius: 10px;
+    border: 0.5px grey solid;
+    background-color: rgb(240, 255, 255, 0.7);
+
+}
+
+#add-new-project {
+    border-radius: 10px;
+    border: 0.5px grey solid;
+    background-color: rgb(240, 255, 255, 0.7);
+}
