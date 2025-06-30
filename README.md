@@ -31,6 +31,7 @@ A dynamic and modular To-Do List web application built using vanilla JavaScript,
 
 - 🎨 **Responsive UI**  
   Minimal UI with dynamic rendering based on the current state, built completely with JavaScript DOM manipulation.
+  ![image](https://github.com/user-attachments/assets/a39e6bcc-3f98-48ee-a652-256ce1bc1904)
 
 ---
 
