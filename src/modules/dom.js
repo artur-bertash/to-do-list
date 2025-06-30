@@ -44,6 +44,8 @@ function renderProjects(projects, wrapperProjects) {
         deleteProjectBtn.addEventListener("click", () => {
             delProject(project);
             renderProjects(getProjects(), wrapperProjects)
+            setCurrentProject(getProjects()[getProjects().length - 1])
+            renderContent(getCurrentProject())
         })
         wrapperProject.style.display = "flex"
         wrapperProject.style.justifyContent = "space-between"
@@ -351,6 +353,7 @@ function renderNav(projects) {
 
             saveCurrentProjects(getProjects())
 
+            renderContent(getCurrentProject())
             dialogAddProject.close();
             dialogAddProject.remove();
 
