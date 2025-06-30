@@ -44,6 +44,11 @@ function renderProjects(projects, wrapperProjects) {
         deleteProjectBtn.addEventListener("click", () => {
             delProject(project);
             renderProjects(getProjects(), wrapperProjects)
+            if (getProjects().length - 1 < 0) {
+                renderContent(createProject("You deleted all projects", "Press add a new project"))
+                document.querySelector(".to-do-container").innerHTML = ""
+                return
+            }
             setCurrentProject(getProjects()[getProjects().length - 1])
             renderContent(getCurrentProject())
         })
