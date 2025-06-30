@@ -1,5 +1,10 @@
-function createProject(title, description) {
+function createProject(title, description, id = crypto.randomUUID()) {
     let todos = []
+
+
+    function getId() {
+        return id;
+    }
 
     const addToDo = (todo) => {
         todos.push(todo)
@@ -21,6 +26,9 @@ function createProject(title, description) {
 
         }
     }
+    const setToDos = (newTodos) => {
+        todos = newTodos || [];
+    };
 
     const getToDos = () => {
         return todos
@@ -33,7 +41,7 @@ function createProject(title, description) {
     const getDescription = () => {
         return description
     }
-    return { id: crypto.randomUUID(), getTitle, getDescription, addToDo, removeToDo, printToDos, getToDos }
+    return { getId, getTitle, getDescription, addToDo, removeToDo, printToDos, getToDos, setToDos, getId }
 }
 
 export { createProject };

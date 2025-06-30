@@ -5,13 +5,16 @@ import {
     delToDoCurrent,
     getProjects,
     getCurrentProject,
-    setCurrentProject
+    setCurrentProject,
+    delProject
 } from './controller.js';
 
 import { createProject } from './project.js';
 import { createToDo } from './todo.js';
-
+import { saveCurrentProjects } from './storage.js'
+import { saveCurrentProject } from './storage.js';
 function renderScreen(projects, currentProject) {
+
     const toDoWrapper = document.querySelector(".to-do-wrapper")
     toDoWrapper.innerHTML = ""
     renderNav(getProjects())
@@ -24,13 +27,27 @@ function renderProjects(projects, wrapperProjects) {
     wrapperProjects.innerHTML = ""
     for (let project of projects) {
         console.log(project.getTitle())
+        const wrapperProject = document.createElement("div")
         const projectBtn = document.createElement("button")
         projectBtn.innerText = project.getTitle()
-        wrapperProjects.appendChild(projectBtn)
+        wrapperProject.appendChild(projectBtn)
         projectBtn.addEventListener("click", () => {
             setCurrentProject(project)
             renderContent(project)
+            saveCurrentProject(project)
         })
+        const deleteProjectBtn = document.createElement("i")
+        deleteProjectBtn.className = 'fa-regular fa-square-minus'
+        deleteProjectBtn.style.cursor = "pointer"
+        wrapperProject.appendChild(deleteProjectBtn)
+
+        deleteProjectBtn.addEventListener("click", () => {
+            delProject(project);
+            renderProjects(getProjects(), wrapperProjects)
+        })
+        wrapperProject.style.display = "flex"
+        wrapperProject.style.justifyContent = "space-between"
+        wrapperProjects.appendChild(wrapperProject)
     }
 }
 
@@ -91,7 +108,7 @@ function renderNav(projects) {
         titleWrapper.style.flexDirection = "column";
         titleWrapper.style.gap = "8px";
         titleWrapper.style.marginBottom = "12px";
-
+        titleWrapper.required = true
 
         const labelTitle = document.createElement('label');
         labelTitle.textContent = "Title:";
@@ -106,6 +123,7 @@ function renderNav(projects) {
         inputTitle.style.borderRadius = '4px'
         inputTitle.style.border = '0.5px grey solid'
         inputTitle.style.fontSize = "1.1rem"
+        inputTitle.required = true
 
         inputTitle.placeholder = 'Enter your task...';
 
@@ -125,6 +143,7 @@ function renderNav(projects) {
         inputDate.style.border = '0.5px grey solid'
         inputDate.style.fontSize = "1.1rem"
         inputDate.style.fontWeight = "200"
+        inputDate.required = true
 
         const labelDate = document.createElement("label")
         labelDate.textContent = "Date:";
@@ -203,6 +222,11 @@ function renderNav(projects) {
         })
 
         AddToDoBtn.addEventListener("click", () => {
+            if (!inputTitle.checkValidity() || !inputDate.checkValidity()) {
+                inputTitle.reportValidity();
+                inputDate.reportValidity();
+                return; // stop execution
+            }
             const title = inputTitle.value.trim()
             const date = inputDate.value
             const isImportant = inputImportance.checked
@@ -325,6 +349,8 @@ function renderNav(projects) {
             addProject(createProject(titleProject, descriptionProject))
             renderProjects(getProjects(), wrapperProjects)
 
+            saveCurrentProjects(getProjects())
+
             dialogAddProject.close();
             dialogAddProject.remove();
 
@@ -395,7 +421,8 @@ function renderToDos(todoContainer) {
         dateDiv.textContent = todo.date;
 
         const importantDiv = document.createElement("div");
-        importantDiv.textContent = todo.isImportant ? "Important!" : "";
+        importantDiv.textContent = todo.isImportant ? "Important" : "";
+        importantDiv.style.fontWeight = "500"
 
         const deleteBtn = document.createElement("button");
         deleteBtn.classList.add("delete");
@@ -409,9 +436,9 @@ function renderToDos(todoContainer) {
             delToDoCurrent(todo);
             renderContent(getCurrentProject());
         });
-
-        rightSide.appendChild(dateDiv);
         rightSide.appendChild(importantDiv);
+        rightSide.appendChild(dateDiv);
+
         rightSide.appendChild(deleteBtn);
 
         task.appendChild(label);

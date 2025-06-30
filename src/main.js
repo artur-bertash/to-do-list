@@ -8,6 +8,9 @@ import {
     getProjects,
     getCurrentProject
 } from './modules/controller.js';
+import { storageAvailable } from "./modules/storage.js";
+import { getSavedCurrentProjects } from "./modules/storage.js";
+
 import { createProject } from "./modules/project";
 import { createToDo } from "./modules/todo";
 import { renderScreen } from "./modules/dom.js";
@@ -16,14 +19,14 @@ const now = new Date();
 console.log(format(now, 'yyyy-MM-dd'));
 
 
+if (storageAvailable("localStorage")) {
+    console.log("We can store data in browser")
+} else {
+    console.log("The data storage is not supported")
+}
 
 
-const defProject = createProject("General", "Some random description");
-initController(defProject)
-const todo_1 = createToDo("First thing", "2025-06-05");
-const todo_2 = createToDo("Second thing", "2025-06-05");
 
-defProject.addToDo(todo_1)
-defProject.addToDo(todo_2)
+
 
 renderScreen(getProjects(), getCurrentProject())
